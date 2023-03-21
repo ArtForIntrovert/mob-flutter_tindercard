@@ -9,34 +9,23 @@ enum TriggerDirection { none, right, left, up, down }
 /// A Tinder-Like Widget.
 class TinderSwapCard extends StatefulWidget {
   final CardBuilder? _cardBuilder;
-
   final int? _totalNum;
-
   final int _stackNum;
-
   final int _animDuration;
-
   final double _swipeEdge;
-
   final double _swipeEdgeVertical;
-
   final bool _swipeUp;
-
   final bool _swipeDown;
-
   final bool _allowVerticalMovement;
-
   final bool _allowSwiping;
-
   final CardSwipeCompleteCallback? swipeCompleteCallback;
-
   final CardDragUpdateCallback? swipeUpdateCallback;
-
   final CardController? cardController;
-
   final List<Size> _cardSizes = [];
-
   final List<Alignment> _cardAligns = [];
+
+  final double deltaXMultiplier;
+  final double deltaYMultiplier;
 
   @override
   _TinderSwapCardState createState() => _TinderSwapCardState();
@@ -64,6 +53,8 @@ class TinderSwapCard extends StatefulWidget {
     required double maxHeight,
     required double minWidth,
     required double minHeight,
+    this.deltaXMultiplier = 5.5,
+    this.deltaYMultiplier = 30,
     bool allowVerticalMovement = true,
     this.cardController,
     this.swipeCompleteCallback,
@@ -227,17 +218,15 @@ class _TinderSwapCardState extends State<TinderSwapCard>
 
   void _handlePanGesture(DragUpdateDetails details) {
     setState(() {
+      final size = context.size ?? MediaQuery.of(context).size;
       if (widget._allowVerticalMovement == true) {
         frontCardAlign = Alignment(
-          frontCardAlign!.x +
-              details.delta.dx * 20 / MediaQuery.of(context).size.width,
-          frontCardAlign!.y +
-              details.delta.dy * 30 / MediaQuery.of(context).size.height,
+          frontCardAlign!.x + details.delta.dx * widget.deltaXMultiplier / size.width,
+          frontCardAlign!.y + details.delta.dy * widget.deltaYMultiplier / size.height,
         );
       } else {
         frontCardAlign = Alignment(
-          frontCardAlign!.x +
-              details.delta.dx * 20 / MediaQuery.of(context).size.width,
+          frontCardAlign!.x + details.delta.dx * widget.deltaXMultiplier / size.width,
           0,
         );
 
